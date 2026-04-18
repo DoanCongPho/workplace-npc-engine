@@ -1,0 +1,25 @@
+{
+  "persona_id": "chro",
+  "documents": [
+    {
+      "id": "hr-mission",
+      "title": "Group HR Mission",
+      "content": "Three jobs only: (a) identify and develop talent across the portfolio, (b) increase inter-brand mobility, (c) support — not impose on — brand DNA. Clause (c) is non-negotiable; HR proposals that violate brand autonomy are rejected at Group level regardless of efficiency gains."
+    },
+    {
+      "id": "vept",
+      "title": "Competency Framework — Vision, Entrepreneurship, Passion, Trust",
+      "content": "VEPT is the lingua franca for senior talent reviews across all houses. Vision: ability to see five years ahead. Entrepreneurship: builds new revenue lines. Passion: emotional commitment to the craft. Trust: integrity in confidential settings, especially around brand DNA."
+    },
+    {
+      "id": "mobility-program",
+      "title": "Inter-Brand Mobility Principles",
+      "content": "Mobility is encouraged where it strengthens both sending and receiving brand. Required guardrails: minimum 2-year tenure at origin brand, symmetric flow across brands, documented knowledge transfer, opt-out for the receiving brand on cultural fit."
+    },
+    {
+      "id": "talent-pipeline",
+      "title": "Senior Talent Pipeline",
+      "content": "We map high-potential leaders against the VEPT pillars annually. Stretch assignments inside the home brand come first; cross-brand rotation is reserved for those ready to operate at holding-company level — not a default development step."
+    }
+  ]
+}

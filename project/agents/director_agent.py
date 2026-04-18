@@ -2,6 +2,9 @@
 
 Three independent signals — first match wins. Deterministic logic, no LLM call.
 The frontend renders a dismissable hint banner when `director_hint` is non-null.
+
+Persona-agnostic: the persona's domain vocabulary is passed in, so any NPC
+can use this Director without modification.
 """
 from typing import Optional
 
@@ -9,7 +12,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from agents.personas.ceo import CEO_DOMAIN_KW
+from agents.personas.base import PersonaConfig
 from memory.conversation_store import Message
 
 
@@ -19,9 +22,7 @@ _PROGRESS_KW = {
 }
 
 
-# Lazy singleton — loading the model is ~80–200ms. We pay it once on first call.
 _embedder: Optional[SentenceTransformer] = None
-# Don't fire more than once every N turns. Avoids hint fatigue.
 HINT_COOLDOWN_TURNS = 3
 
 
@@ -36,6 +37,7 @@ def check_trigger(
     history: list[Message],
     rapport_score: float,
     turn_count: int,
+    persona: PersonaConfig,
     last_hint_turn: int = -10,
 ) -> Optional[str]:
     """Return a hint string if any signal trips, else None."""
@@ -44,7 +46,7 @@ def check_trigger(
 
     user_msgs = [m.content for m in history if m.role == "user"]
 
-    # Signal 1 — semantic loop (rephrasing the same idea)
+    # Signal 1 — semantic loop (rephrasing the same idea three turns running)
     if len(user_msgs) >= 3:
         embs = _get_embedder().encode(user_msgs[-3:])
         sim_01 = float(cosine_similarity([embs[0]], [embs[1]])[0][0])
@@ -55,7 +57,7 @@ def check_trigger(
                 "Try approaching the problem from a different angle."
             )
 
-    # Signal 2 — turn count without progress markers (no proposal language)
+    # Signal 2 — many turns without proposal-language
     if turn_count > 5:
         all_user_text = " ".join(user_msgs).lower()
         if not any(k in all_user_text for k in _PROGRESS_KW):
@@ -64,19 +66,18 @@ def check_trigger(
                 "before the simulation ends."
             )
 
-    # Signal 3 — sentiment drift: low rapport AND no domain vocabulary in last 3 turns
+    # Signal 3 — sentiment drift: low rapport AND no domain vocab in last 3 turns
     if rapport_score < 40 and turn_count >= 3:
         recent_text = " ".join(user_msgs[-3:]).lower()
-        domain_hits = sum(1 for k in CEO_DOMAIN_KW if k in recent_text)
+        domain_hits = sum(1 for k in persona.domain_kw if k in recent_text)
         if domain_hits == 0:
             return (
-                "Try grounding your proposal in Gucci's Competency Framework "
-                "(Vision, Entrepreneurship, Passion, Trust) and specific brand data."
+                f"Try grounding your proposal in {persona.role_title}'s domain — "
+                "use specific terminology and reference concrete examples."
             )
 
     return None
 
 
-# Module-level cosine helper kept for testability / future Tier-2 reuse.
 def _cosine(a: np.ndarray, b: np.ndarray) -> float:
     return float(cosine_similarity([a], [b])[0][0])

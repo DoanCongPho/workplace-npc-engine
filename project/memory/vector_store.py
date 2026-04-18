@@ -52,9 +52,22 @@ class PersonaIndex:
         self.index.add(embeddings)
 
     def search(self, query: str, k: int = 3) -> list[Document]:
+        docs, _ = self.search_with_score(query, k)
+        return docs
+
+    def search_with_score(
+        self, query: str, k: int = 3
+    ) -> tuple[list[Document], float]:
+        """Return (docs, top_cosine). Vectors are L2-normalized so IP == cosine.
+
+        top_cosine is the score of the best hit. Use it as a relevance gate
+        to decide whether to inject retrieved context at all.
+        """
         q = _embed([query])
-        _, idx = self.index.search(q, min(k, len(self.docs)))
-        return [self.docs[i] for i in idx[0] if i != -1]
+        scores, idx = self.index.search(q, min(k, len(self.docs)))
+        docs = [self.docs[i] for i in idx[0] if i != -1]
+        top_score = float(scores[0][0]) if len(scores[0]) else 0.0
+        return docs, top_score
 
 
 class VectorStore:

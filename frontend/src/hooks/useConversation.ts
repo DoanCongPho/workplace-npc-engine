@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { postChat, resetSession } from "../lib/api";
 import type { Message, StateUpdate } from "../types";
 
@@ -20,6 +20,16 @@ export function useConversation(personaId: string = "ceo") {
   const [state, setState] = useState<StateUpdate>(INITIAL_STATE);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset conversation when persona switches (skip on first mount)
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return; }
+    setSessionId(newSessionId());
+    setMessages([]);
+    setState(INITIAL_STATE);
+    setError(null);
+  }, [personaId]);
 
   const send = useCallback(
     async (text: string) => {

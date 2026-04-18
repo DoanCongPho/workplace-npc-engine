@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import type { Message } from "../types";
 
 interface Props {
@@ -6,82 +6,173 @@ interface Props {
   isSending: boolean;
   error: string | null;
   onSend: (text: string) => void;
+  personaId: string;
+  personaInitials: string;
 }
 
-export function ChatWindow({ messages, isSending, error, onSend }: Props) {
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1 px-1 py-1">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-2 w-2 rounded-full bg-slate-400 animate-bounce"
+          style={{ animationDelay: `${i * 0.15}s` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function ChatWindow({
+  messages,
+  isSending,
+  error,
+  onSend,
+  personaId,
+  personaInitials,
+}: Props) {
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, isSending]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    submit();
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submit();
+    }
+  }
+
+  function submit() {
     if (!draft.trim() || isSending) return;
     onSend(draft);
     setDraft("");
   }
 
+  // Persona-specific accent classes (full strings so Tailwind doesn't purge)
+  const userBubbleCls =
+    personaId === "ceo"
+      ? "bg-indigo-500 text-white"
+      : "bg-teal-500 text-white";
+
+  const avatarCls =
+    personaId === "ceo"
+      ? "bg-indigo-100 text-indigo-700"
+      : "bg-teal-100 text-teal-700";
+
+  const sendBtnCls =
+    personaId === "ceo"
+      ? "bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-300"
+      : "bg-teal-500 hover:bg-teal-600 disabled:bg-teal-300";
+
+  const focusRingCls =
+    personaId === "ceo"
+      ? "focus:ring-indigo-400"
+      : "focus:ring-teal-400";
+
   return (
-    <div className="flex h-full flex-col">
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
-        {messages.length === 0 && (
-          <p className="text-center text-sm text-neutral-500">
-            Start a conversation with the AI co-worker.
-          </p>
-        )}
-        <ul className="space-y-3">
-          {messages.map((m, i) => (
-            <li
-              key={i}
-              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+    <div className="flex h-full flex-col bg-slate-50">
+      {/* Messages */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
+        {messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <div
+              className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold ${avatarCls}`}
             >
-              <div
-                className={`max-w-[75%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
-                  m.role === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-neutral-800 text-neutral-100"
+              {personaInitials}
+            </div>
+            <p className="text-sm text-slate-400">
+              Start a conversation to begin the simulation.
+            </p>
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {messages.map((m, i) => (
+              <li
+                key={i}
+                className={`flex items-end gap-2 ${
+                  m.role === "user" ? "flex-row-reverse" : "flex-row"
                 }`}
               >
-                {m.content}
-              </div>
-            </li>
-          ))}
-          {isSending && (
-            <li className="flex justify-start">
-              <div className="rounded-lg bg-neutral-800 px-3 py-2 text-sm text-neutral-400">
-                …
-              </div>
-            </li>
-          )}
-        </ul>
+                {/* Avatar — only for assistant */}
+                {m.role === "assistant" && (
+                  <div
+                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold ${avatarCls}`}
+                  >
+                    {personaInitials}
+                  </div>
+                )}
+
+                <div
+                  className={`max-w-[72%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
+                    m.role === "user"
+                      ? `${userBubbleCls} rounded-br-sm`
+                      : "bg-white text-slate-800 border border-slate-100 rounded-bl-sm"
+                  }`}
+                >
+                  {m.content}
+                </div>
+              </li>
+            ))}
+
+            {isSending && (
+              <li className="flex items-end gap-2 flex-row">
+                <div
+                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold ${avatarCls}`}
+                >
+                  {personaInitials}
+                </div>
+                <div className="rounded-2xl rounded-bl-sm border border-slate-100 bg-white px-4 py-2.5 shadow-sm">
+                  <TypingDots />
+                </div>
+              </li>
+            )}
+          </ul>
+        )}
+
         {error && (
-          <p className="mt-3 text-center text-xs text-red-400">{error}</p>
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-xs text-red-600">
+            {error}
+          </div>
         )}
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="border-t border-neutral-800 bg-neutral-950 p-3"
-      >
-        <div className="flex gap-2">
-          <input
+      {/* Input */}
+      <div className="border-t border-slate-200 bg-white px-4 py-3">
+        <form onSubmit={handleSubmit} className="flex items-end gap-2">
+          <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type a message…"
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message… (Enter to send, Shift+Enter for newline)"
             disabled={isSending}
-            className="flex-1 rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-indigo-500 focus:outline-none disabled:opacity-50"
+            rows={1}
+            className={`flex-1 resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 ${focusRingCls} disabled:opacity-50`}
+            style={{ maxHeight: "120px" }}
+            onInput={(e) => {
+              const t = e.currentTarget;
+              t.style.height = "auto";
+              t.style.height = `${Math.min(t.scrollHeight, 120)}px`;
+            }}
           />
           <button
             type="submit"
             disabled={isSending || !draft.trim()}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+            className={`rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-colors ${sendBtnCls} disabled:cursor-not-allowed`}
           >
             Send
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
