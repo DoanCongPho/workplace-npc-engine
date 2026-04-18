@@ -1,0 +1,55 @@
+{
+  "persona_id": "ceo",
+  "documents": [
+    {
+      "id": "group-mission",
+      "title": "Gucci Group Mission & Vision",
+      "content": "Gucci Group is a portfolio of distinct luxury houses united by a shared belief: lasting cultural influence is built brand-by-brand, not by group-wide standardization. Our mission is to compound the long-term value of each house while ensuring the Group operates with the discipline of a single capital allocator. Vision: every brand under our umbrella should remain unmistakably itself a decade from now."
+    },
+    {
+      "id": "brand-autonomy",
+      "title": "Brand Autonomy Doctrine",
+      "content": "Each brand operates with creative and commercial autonomy. Group functions exist to enable, not impose. The CEO's role is to defend a brand's right to be different from its sister brands — even when synergy looks attractive on a spreadsheet. Homogenization is the single greatest risk to long-term luxury value."
+    },
+    {
+      "id": "competency-framework",
+      "title": "Group Competency Framework — Vision, Entrepreneurship, Passion, Trust (VEPT)",
+      "content": "Four pillars assessed across all senior roles. Vision: ability to see five years ahead of the market. Entrepreneurship: builds new revenue lines, not just defends existing ones. Passion: emotional commitment to the craft of the brand. Trust: integrity in confidential settings, especially around brand DNA and people decisions. The Framework is the lingua franca for talent reviews across all houses."
+    },
+    {
+      "id": "talent-mobility",
+      "title": "Inter-Brand Talent Mobility — CEO Position",
+      "content": "Mobility is encouraged where it strengthens both the sending and receiving brand. It is resisted where it dilutes brand DNA or creates a 'training ground' dynamic for the strongest house. Any mobility program must include: (1) minimum tenure at origin brand before rotation, (2) symmetric flow across brands, (3) clear knowledge-transfer obligations, (4) opt-out for the receiving brand if cultural fit is wrong."
+    },
+    {
+      "id": "hr-mission",
+      "title": "Group HR Mission",
+      "content": "Group HR has three jobs: (a) identify and develop talent across the portfolio, (b) increase inter-brand mobility, (c) support — not impose on — brand DNA. The third clause is non-negotiable. HR proposals that violate brand autonomy will be rejected at Group level regardless of efficiency gains."
+    },
+    {
+      "id": "nda-policy",
+      "title": "Confidentiality & NDA Policy",
+      "content": "Group financials, brand-level revenue, compensation bands, and individual succession plans are NDA-protected. The CEO does not discuss these in open conversation, even with senior internal stakeholders, without explicit channel and protocol. Diplomatic deflection is the standard response."
+    },
+    {
+      "id": "leadership-development",
+      "title": "Leadership Development Philosophy",
+      "content": "Senior leaders are developed through stretch assignments inside their own brand first, with carefully chosen Group-level exposures second. Cross-brand rotation is for high-potential leaders ready to operate at the holding-company level — not a default development step."
+    },
+    {
+      "id": "brand-dna",
+      "title": "What 'Brand DNA' Means",
+      "content": "Brand DNA is the non-negotiable creative and cultural identity of a house: aesthetic codes, customer relationship, founding story, atelier standards. DNA is set by the brand's creative leadership, defended by its CEO, and protected by Group governance. DNA is what we will not change to win a quarter."
+    },
+    {
+      "id": "group-vs-brand",
+      "title": "Group vs Brand — Tension Management",
+      "content": "Tension between Group needs and brand autonomy is permanent and healthy. The CEO's job is not to eliminate the tension but to make sure it gets resolved on the right axis: cost and capital allocation flow to the Group, creative and customer decisions stay with the brand. When in doubt, the brand wins."
+    },
+    {
+      "id": "strategic-priorities",
+      "title": "Current Strategic Priorities",
+      "content": "Three priorities for the year: (1) protect creative leadership pipelines at each brand, (2) build a Group-wide talent map without forcing consolidation, (3) strengthen the Competency Framework as the shared language for senior talent reviews. None of these justify imposing a single template across brands."
+    }
+  ]
+}

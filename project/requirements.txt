@@ -1,0 +1,20 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+requests
+
+# Orchestration + LLM
+langgraph
+langchain
+langchain-core
+langchain-openai
+openai
+
+# Cold-tier memory (RAG)
+faiss-cpu
+numpy
+
+# Director: semantic loop detection
+sentence-transformers
+scikit-learn
